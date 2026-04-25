@@ -42,5 +42,12 @@ export interface ListEntry {
   /** 1–10, or null when not graded */
   grade: number | null;
   note: string;
+  /**
+   * Episodes watched. Movies always store 1.
+   * For TV: a positive integer, or null meaning "all" (used when Completed).
+   */
+  episodesWatched: number | null;
+  /** Total episode count fetched from TMDB. Null for movies or if unavailable. */
+  totalEpisodes: number | null;
   addedAt: number;
 }

@@ -14,6 +14,22 @@ function getApiKey(): string {
   return key;
 }
 
+export interface TVDetails {
+  number_of_episodes: number;
+}
+
+export async function getTVDetails(id: number): Promise<TVDetails> {
+  const url = new URL(`${BASE_URL}/tv/${id}`);
+  url.searchParams.set('api_key', getApiKey());
+
+  const response = await fetch(url.toString());
+  if (!response.ok) {
+    const body = await response.text().catch(() => '');
+    throw new Error(`TMDB ${response.status}: ${body || response.statusText}`);
+  }
+  return response.json() as Promise<TVDetails>;
+}
+
 export async function searchMulti(
   query: string,
   page = 1

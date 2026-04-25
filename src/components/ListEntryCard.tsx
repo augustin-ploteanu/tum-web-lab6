@@ -9,12 +9,25 @@ interface ListEntryCardProps {
 }
 
 export function ListEntryCard({ entry, onEdit, onRemove }: ListEntryCardProps) {
-  const { item, category, grade, note } = entry;
+  const { item, category, grade, note, episodesWatched, totalEpisodes } = entry;
   const title = item.title ?? item.name ?? 'Unknown';
   const year = (item.release_date ?? item.first_air_date ?? '').slice(0, 4);
   const posterUrl = item.poster_path
     ? `${IMAGE_BASE_URL}${item.poster_path}`
     : null;
+
+  const episodesLabel = (() => {
+    if (item.media_type === 'movie') return null;
+    const total = totalEpisodes !== null ? `/ ${totalEpisodes}` : '';
+    if (episodesWatched === null) {
+      // completed — all watched
+      return totalEpisodes !== null ? `${totalEpisodes} / ${totalEpisodes} eps.` : 'All eps. watched';
+    }
+    if (episodesWatched > 0) {
+      return `${episodesWatched} ${total} eps.`.trim();
+    }
+    return null;
+  })();
 
   return (
     <article className="entry-card">
@@ -44,6 +57,9 @@ export function ListEntryCard({ entry, onEdit, onRemove }: ListEntryCardProps) {
             <p className="entry-card__meta">
               {year && <span>{year}</span>}
               <span>{item.media_type === 'movie' ? 'Movie' : 'TV Show'}</span>
+              {episodesLabel && (
+                <span className="entry-card__episodes">{episodesLabel}</span>
+              )}
               <span className="entry-card__category-badge">
                 {CATEGORY_LABELS[category]}
               </span>

@@ -564,6 +564,11 @@
   color: var(--accent);
 }
 
+.entry-card__episodes {
+  font-size: 12px;
+  color: var(--text);
+}
+
 .entry-card__grade {
   flex-shrink: 0;
   font-size: 22px;
@@ -790,6 +795,27 @@
   &:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-bg);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.modal__episodes-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal__episodes-total {
+  font-size: 15px;
+  color: var(--text);
+
+  strong {
+    color: var(--text-h);
+    font-weight: 600;
   }
 }
 

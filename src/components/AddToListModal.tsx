@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { IMAGE_BASE_URL } from '../api/tmdb';
+import { IMAGE_BASE_URL, getTVDetails } from '../api/tmdb';
 import { CATEGORY_LABELS } from '../types';
 import type { EntryCategory, ListEntry, WatchableItem } from '../types';
 
@@ -27,8 +27,25 @@ export function AddToListModal({
     existingEntry?.grade != null ? String(existingEntry.grade) : ''
   );
   const [note, setNote] = useState(existingEntry?.note ?? '');
+  // null = "all" (auto-set when Completed); stored as string in the input
+  const [episodes, setEpisodes] = useState<string>(() => {
+    if (item.media_type === 'movie') return '1';
+    const e = existingEntry?.episodesWatched;
+    return e != null ? String(e) : '';
+  });
+  const [totalEpisodes, setTotalEpisodes] = useState<number | null>(
+    existingEntry?.totalEpisodes ?? null
+  );
 
   const overlayRef = useRef<HTMLDivElement>(null);
+
+  // Fetch total episode count for TV shows
+  useEffect(() => {
+    if (item.media_type !== 'tv' || totalEpisodes !== null) return;
+    getTVDetails(item.id)
+      .then((d) => setTotalEpisodes(d.number_of_episodes))
+      .catch(() => { /* non-fatal, just won't show total */ });
+  }, [item.id, item.media_type, totalEpisodes]);
 
   // Close on Escape
   useEffect(() => {
@@ -45,8 +62,24 @@ export function AddToListModal({
     return () => { document.body.style.overflow = ''; };
   }, []);
 
+  // Auto-set episodes when Completed is selected for TV shows
+  useEffect(() => {
+    if (item.media_type !== 'tv') return;
+    if (category === 'completed') {
+      setEpisodes(''); // empty string = "all" when completed
+    }
+  }, [category, item.media_type]);
+
   function handleOverlayClick(e: React.MouseEvent) {
     if (e.target === overlayRef.current) onClose();
+  }
+
+  function handleEpisodesChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const raw = e.target.value;
+    if (raw === '') { setEpisodes(''); return; }
+    let num = Math.max(0, parseInt(raw, 10));
+    if (totalEpisodes !== null) num = Math.min(num, totalEpisodes);
+    setEpisodes(isNaN(num) ? '' : String(num));
   }
 
   function handleGradeChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -58,12 +91,24 @@ export function AddToListModal({
 
   function handleSave() {
     const parsedGrade = grade === '' ? null : parseInt(grade, 10);
+
+    let episodesWatched: number | null;
+    if (item.media_type === 'movie') {
+      episodesWatched = 1;
+    } else if (category === 'completed' || episodes === '') {
+      episodesWatched = null; // null = all watched
+    } else {
+      episodesWatched = parseInt(episodes, 10);
+    }
+
     const entry: ListEntry = {
       id: `${item.media_type}-${item.id}`,
       item,
       category,
       grade: parsedGrade,
       note: note.trim(),
+      episodesWatched,
+      totalEpisodes: item.media_type === 'movie' ? null : totalEpisodes,
       addedAt: existingEntry?.addedAt ?? Date.now(),
     };
     onSave(entry);
@@ -134,7 +179,7 @@ export function AddToListModal({
           <div className="modal__field">
             <label className="modal__label" htmlFor="modal-grade">
               Grade{' '}
-              <span className="modal__label-hint">(1–10, optional)</span>
+              <span className="modal__label-hint">(1–10)</span>
             </label>
             <input
               id="modal-grade"
@@ -148,10 +193,41 @@ export function AddToListModal({
             />
           </div>
 
+          {item.media_type === 'tv' && (
+            <div className="modal__field">
+              <label className="modal__label" htmlFor="modal-episodes">
+                Episodes watched{' '}
+                <span className="modal__label-hint">
+                  {category === 'completed'}
+                </span>
+              </label>
+              <div className="modal__episodes-row">
+                <input
+                  id="modal-episodes"
+                  type="number"
+                  className="modal__input"
+                  min={0}
+                  max={totalEpisodes ?? undefined}
+                  placeholder={category === 'completed' ? String(totalEpisodes ?? 'All') : '0'}
+                  value={category === 'completed' ? '' : episodes}
+                  disabled={category === 'completed'}
+                  onChange={handleEpisodesChange}
+                />
+                {totalEpisodes !== null && (
+                  <span className="modal__episodes-total">
+                    /{' '}
+                    {category === 'completed'
+                      ? <strong>{totalEpisodes}</strong>
+                      : totalEpisodes}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="modal__field">
             <label className="modal__label" htmlFor="modal-note">
               Note{' '}
-              <span className="modal__label-hint">(optional)</span>
             </label>
             <textarea
               id="modal-note"
