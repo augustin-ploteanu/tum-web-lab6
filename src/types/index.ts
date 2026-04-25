@@ -24,6 +24,7 @@ export type SearchStatus = 'idle' | 'loading' | 'success' | 'error';
 export type WatchableItem = MediaItem & { media_type: 'movie' | 'tv' };
 
 export type Category = 'all' | 'completed' | 'watching' | 'plan_to_watch' | 'dropped';
+export type EntryCategory = Exclude<Category, 'all'>;
 
 export const CATEGORY_LABELS: Record<Category, string> = {
   all: 'All Entries',
@@ -32,3 +33,14 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   plan_to_watch: 'Plan to Watch',
   dropped: 'Dropped',
 };
+
+export interface ListEntry {
+  /** `${media_type}-${id}` */
+  id: string;
+  item: WatchableItem;
+  category: EntryCategory;
+  /** 1–10, or null when not graded */
+  grade: number | null;
+  note: string;
+  addedAt: number;
+}

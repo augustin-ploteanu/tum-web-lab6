@@ -6,6 +6,8 @@ interface SearchResultsProps {
   status: SearchStatus;
   error: string | null;
   query: string;
+  getEntry: (id: string) => boolean;
+  onAddClick: (item: WatchableItem) => void;
 }
 
 export function SearchResults({
@@ -13,6 +15,8 @@ export function SearchResults({
   status,
   error,
   query,
+  getEntry,
+  onAddClick,
 }: SearchResultsProps) {
   if (status === 'idle') return null;
 
@@ -57,7 +61,12 @@ export function SearchResults({
       </p>
       <div className="search-results__grid">
         {results.map((item) => (
-          <SearchResultCard key={`${item.media_type}-${item.id}`} item={item} />
+          <SearchResultCard
+            key={`${item.media_type}-${item.id}`}
+            item={item}
+            inList={getEntry(`${item.media_type}-${item.id}`)}
+            onAddClick={onAddClick}
+          />
         ))}
       </div>
     </section>

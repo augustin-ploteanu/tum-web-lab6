@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { SearchBar } from './components/SearchBar'
 import { SearchResults } from './components/SearchResults'
 import { MyList } from './components/MyList'
+import { AddToListModal } from './components/AddToListModal'
 import { useSearch } from './hooks/useSearch'
+import { useWatchlist } from './hooks/useWatchlist'
+import type { WatchableItem, ListEntry } from './types'
 import './App.css'
 
 type View = 'search' | 'list'
@@ -10,7 +13,26 @@ type View = 'search' | 'list'
 function App() {
   const [query, setQuery] = useState('')
   const [view, setView] = useState<View>('search')
+  const [pendingItem, setPendingItem] = useState<WatchableItem | null>(null)
+
   const { results, status, error } = useSearch(query)
+  const { entries, addOrUpdate, remove, getEntry } = useWatchlist()
+
+  function handleAddClick(item: WatchableItem) {
+    setPendingItem(item)
+  }
+
+  function handleEditEntry(entry: ListEntry) {
+    setPendingItem(entry.item)
+  }
+
+  function handleSave(entry: ListEntry) {
+    addOrUpdate(entry)
+  }
+
+  function isInList(id: string): boolean {
+    return getEntry(id) !== null
+  }
 
   return (
     <>
@@ -42,12 +64,32 @@ function App() {
               <h1 className="search-section__title">Find Movies &amp; TV Shows</h1>
               <SearchBar value={query} onChange={setQuery} />
             </section>
-            <SearchResults results={results} status={status} error={error} query={query} />
+            <SearchResults
+              results={results}
+              status={status}
+              error={error}
+              query={query}
+              getEntry={isInList}
+              onAddClick={handleAddClick}
+            />
           </>
         ) : (
-          <MyList />
+          <MyList
+            entries={entries}
+            onEdit={handleEditEntry}
+            onRemove={remove}
+          />
         )}
       </main>
+
+      {pendingItem && (
+        <AddToListModal
+          item={pendingItem}
+          existingEntry={getEntry(`${pendingItem.media_type}-${pendingItem.id}`)}
+          onSave={handleSave}
+          onClose={() => setPendingItem(null)}
+        />
+      )}
     </>
   )
 }

@@ -3,9 +3,11 @@ import type { WatchableItem } from '../types';
 
 interface SearchResultCardProps {
   item: WatchableItem;
+  inList: boolean;
+  onAddClick: (item: WatchableItem) => void;
 }
 
-export function SearchResultCard({ item }: SearchResultCardProps) {
+export function SearchResultCard({ item, inList, onAddClick }: SearchResultCardProps) {
   const title = item.title ?? item.name ?? 'Unknown';
   const year = (item.release_date ?? item.first_air_date ?? '').slice(0, 4);
   const posterUrl = item.poster_path
@@ -43,6 +45,12 @@ export function SearchResultCard({ item }: SearchResultCardProps) {
         {item.overview && (
           <p className="result-card__overview">{item.overview}</p>
         )}
+        <button
+          className={`result-card__add-btn${inList ? ' result-card__add-btn--in-list' : ''}`}
+          onClick={() => onAddClick(item)}
+        >
+          {inList ? '✓ In My List' : '+ Add to List'}
+        </button>
       </div>
     </article>
   );
