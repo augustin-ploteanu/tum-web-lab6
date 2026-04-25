@@ -27,6 +27,51 @@
   font-weight: 600;
   color: var(--text-h);
   letter-spacing: -0.3px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--sans);
+  line-height: 1;
+}
+
+.app-header__nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Header nav button */
+
+.nav-btn {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--sans);
+  color: var(--text);
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  line-height: 1.4;
+
+  &:hover {
+    color: var(--text-h);
+    border-color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+.nav-btn--active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-bg);
 }
 
 .app-main {
@@ -281,5 +326,88 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* My List page */
+
+.mylist {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mylist__title {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.8px;
+  color: var(--text-h);
+  margin: 0;
+
+  @media (max-width: 1024px) {
+    font-size: 24px;
+  }
+}
+
+.mylist__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mylist__tab {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--sans);
+  color: var(--text);
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  line-height: 1.4;
+
+  &:hover {
+    color: var(--text-h);
+    border-color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+.mylist__tab--active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.mylist__content {
+  min-height: 200px;
+}
+
+.mylist__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 64px 0;
+  color: var(--text);
+  text-align: center;
+
+  svg {
+    width: 48px;
+    height: 48px;
+    opacity: 0.35;
+  }
+
+  p {
+    max-width: 340px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
 }
 
