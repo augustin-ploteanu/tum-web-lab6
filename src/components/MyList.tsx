@@ -12,14 +12,56 @@ interface MyListProps {
   onRemove: (id: string) => void;
 }
 
+type SortKey = 'added' | 'title' | 'grade' | 'episodes';
+
+const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: 'added', label: 'Date added' },
+  { value: 'title', label: 'Title' },
+  { value: 'grade', label: 'Grade' },
+  { value: 'episodes', label: 'Episodes watched' },
+];
+
+function getTitle(entry: ListEntry) {
+  return (entry.item.title ?? entry.item.name ?? '').toLowerCase();
+}
+
+function sortEntries(entries: ListEntry[], sort: SortKey, dir: 'asc' | 'desc'): ListEntry[] {
+  const mul = dir === 'asc' ? -1 : 1;
+  return [...entries].sort((a, b) => {
+    switch (sort) {
+      case 'added':
+        return mul * (a.addedAt - b.addedAt);
+      case 'title':
+        return mul * getTitle(a).localeCompare(getTitle(b));
+      case 'grade':
+        return mul * ((a.grade ?? -1) - (b.grade ?? -1));
+      case 'episodes': {
+        const epsA = a.episodesWatched ?? a.totalEpisodes ?? 0;
+        const epsB = b.episodesWatched ?? b.totalEpisodes ?? 0;
+        return mul * (epsA - epsB);
+      }
+    }
+  });
+}
+
 export function MyList({ entries, onEdit, onRemove }: MyListProps) {
   const [activeCategory, setActiveCategory] = useState<Category>('all');
   const [showStats, setShowStats] = useState(false);
+  const [search, setSearch] = useState('');
+  const [sort, setSort] = useState<SortKey>('added');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
-  const visible =
+  const categoryEntries =
     activeCategory === 'all'
       ? entries
       : entries.filter((e) => e.category === activeCategory);
+
+  const query = search.trim().toLowerCase();
+  const filtered = query
+    ? categoryEntries.filter((e) => getTitle(e).includes(query))
+    : categoryEntries;
+
+  const visible = sortEntries(filtered, sort, sortDir);
 
   return (
     <div className="mylist">
@@ -64,6 +106,57 @@ export function MyList({ entries, onEdit, onRemove }: MyListProps) {
         })}
       </div>
 
+      <div className="mylist__controls">
+        <div className="mylist__search">
+          <svg className="mylist__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            className="mylist__search-input"
+            type="search"
+            placeholder="Search in list…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            aria-label="Search entries in list"
+          />
+          {search && (
+            <button
+              className="mylist__search-clear"
+              onClick={() => setSearch('')}
+              aria-label="Clear search"
+            >
+              ×
+            </button>
+          )}
+        </div>
+
+        <div className="mylist__sort">
+          <label className="mylist__sort-label" htmlFor="list-sort">Sort by</label>
+          <select
+            id="list-sort"
+            className="mylist__sort-select"
+            value={sort}
+            onChange={(e) => setSort(e.target.value as SortKey)}
+          >
+            {SORT_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+          <button
+            className={`mylist__sort-dir${sortDir === 'asc' ? ' mylist__sort-dir--asc' : ''}`}
+            onClick={() => setSortDir((d) => (d === 'desc' ? 'asc' : 'desc'))}
+            aria-label={sortDir === 'desc' ? 'Sort descending (click for ascending)' : 'Sort ascending (click for descending)'}
+            title={sortDir === 'desc' ? 'Descending' : 'Ascending'}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <polyline points="6 12 12 19 18 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
       <div className="mylist__content" role="tabpanel">
         {visible.length === 0 ? (
           <div className="mylist__empty">
@@ -81,7 +174,9 @@ export function MyList({ entries, onEdit, onRemove }: MyListProps) {
               />
             </svg>
             <p>
-              {activeCategory === 'all'
+              {query
+                ? `No results for "${search}" in this category.`
+                : activeCategory === 'all'
                 ? 'Your list is empty. Search for movies or TV shows to add them.'
                 : `No entries in "${CATEGORY_LABELS[activeCategory]}" yet.`}
             </p>
