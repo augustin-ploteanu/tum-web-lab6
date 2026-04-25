@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import { SearchResultCard } from './SearchResultCard';
+import { ViewToggle } from './ViewToggle';
+import type { ViewMode } from './ViewToggle';
 import type { SearchStatus, WatchableItem } from '../types';
 
 interface SearchResultsProps {
@@ -18,6 +21,8 @@ export function SearchResults({
   getEntry,
   onAddClick,
 }: SearchResultsProps) {
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+
   if (status === 'idle') return null;
 
   if (status === 'loading') {
@@ -55,17 +60,21 @@ export function SearchResults({
 
   return (
     <section className="search-results" aria-label="Search results">
-      <p className="search-results__count" aria-live="polite">
-        {results.length} result{results.length !== 1 ? 's' : ''} for "
-        <strong>{query}</strong>"
-      </p>
-      <div className="search-results__grid">
+      <div className="search-results__header">
+        <p className="search-results__count" aria-live="polite">
+          {results.length} result{results.length !== 1 ? 's' : ''} for "
+          <strong>{query}</strong>"
+        </p>
+        <ViewToggle viewMode={viewMode} onChange={setViewMode} />
+      </div>
+      <div className={`search-results__grid${viewMode === 'list' ? ' search-results__grid--list' : ''}`}>
         {results.map((item) => (
           <SearchResultCard
             key={`${item.media_type}-${item.id}`}
             item={item}
             inList={getEntry(`${item.media_type}-${item.id}`)}
             onAddClick={onAddClick}
+            viewMode={viewMode}
           />
         ))}
       </div>

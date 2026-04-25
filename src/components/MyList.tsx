@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { CATEGORY_LABELS } from '../types';
 import { ListEntryCard } from './ListEntryCard';
 import { StatsPanel } from './StatsPanel';
+import { ViewToggle } from './ViewToggle';
+import type { ViewMode } from './ViewToggle';
 import type { Category, ListEntry } from '../types';
 
 const CATEGORIES = Object.keys(CATEGORY_LABELS) as Category[];
@@ -50,6 +52,7 @@ export function MyList({ entries, onEdit, onRemove }: MyListProps) {
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<SortKey>('added');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
 
   const categoryEntries =
     activeCategory === 'all'
@@ -155,6 +158,7 @@ export function MyList({ entries, onEdit, onRemove }: MyListProps) {
             </svg>
           </button>
         </div>
+        <ViewToggle viewMode={viewMode} onChange={setViewMode} />
       </div>
 
       <div className="mylist__content" role="tabpanel">
@@ -182,13 +186,14 @@ export function MyList({ entries, onEdit, onRemove }: MyListProps) {
             </p>
           </div>
         ) : (
-          <div className="mylist__grid">
+          <div className={`mylist__grid${viewMode === 'grid' ? ' mylist__grid--grid' : ''}`}>
             {visible.map((entry) => (
               <ListEntryCard
                 key={entry.id}
                 entry={entry}
                 onEdit={onEdit}
                 onRemove={onRemove}
+                viewMode={viewMode}
               />
             ))}
           </div>

@@ -1,13 +1,15 @@
 import { IMAGE_BASE_URL } from '../api/tmdb';
+import type { ViewMode } from './ViewToggle';
 import type { WatchableItem } from '../types';
 
 interface SearchResultCardProps {
   item: WatchableItem;
   inList: boolean;
   onAddClick: (item: WatchableItem) => void;
+  viewMode?: ViewMode;
 }
 
-export function SearchResultCard({ item, inList, onAddClick }: SearchResultCardProps) {
+export function SearchResultCard({ item, inList, onAddClick, viewMode = 'grid' }: SearchResultCardProps) {
   const title = item.title ?? item.name ?? 'Unknown';
   const year = (item.release_date ?? item.first_air_date ?? '').slice(0, 4);
   const posterUrl = item.poster_path
@@ -17,7 +19,7 @@ export function SearchResultCard({ item, inList, onAddClick }: SearchResultCardP
     item.vote_average > 0 ? item.vote_average.toFixed(1) : null;
 
   return (
-    <article className="result-card">
+    <article className={`result-card${viewMode === 'list' ? ' result-card--list' : ''}`}>
       <div className="result-card__poster">
         {posterUrl ? (
           <img src={posterUrl} alt={`${title} poster`} loading="lazy" />

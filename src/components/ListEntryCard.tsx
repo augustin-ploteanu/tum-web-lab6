@@ -1,14 +1,16 @@
 import { IMAGE_BASE_URL } from '../api/tmdb';
 import { CATEGORY_LABELS } from '../types';
+import type { ViewMode } from './ViewToggle';
 import type { ListEntry } from '../types';
 
 interface ListEntryCardProps {
   entry: ListEntry;
   onEdit: (entry: ListEntry) => void;
   onRemove: (id: string) => void;
+  viewMode?: ViewMode;
 }
 
-export function ListEntryCard({ entry, onEdit, onRemove }: ListEntryCardProps) {
+export function ListEntryCard({ entry, onEdit, onRemove, viewMode = 'list' }: ListEntryCardProps) {
   const { item, category, grade, note, episodesWatched, totalEpisodes } = entry;
   const title = item.title ?? item.name ?? 'Unknown';
   const year = (item.release_date ?? item.first_air_date ?? '').slice(0, 4);
@@ -30,7 +32,7 @@ export function ListEntryCard({ entry, onEdit, onRemove }: ListEntryCardProps) {
   })();
 
   return (
-    <article className="entry-card">
+    <article className={`entry-card${viewMode === 'grid' ? ' entry-card--grid' : ''}`}>
       <div className="entry-card__poster">
         {posterUrl ? (
           <img src={posterUrl} alt={`${title} poster`} loading="lazy" />
