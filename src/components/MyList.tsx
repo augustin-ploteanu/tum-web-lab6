@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CATEGORY_LABELS } from '../types';
 import { ListEntryCard } from './ListEntryCard';
+import { StatsPanel } from './StatsPanel';
 import type { Category, ListEntry } from '../types';
 
 const CATEGORIES = Object.keys(CATEGORY_LABELS) as Category[];
@@ -13,6 +14,7 @@ interface MyListProps {
 
 export function MyList({ entries, onEdit, onRemove }: MyListProps) {
   const [activeCategory, setActiveCategory] = useState<Category>('all');
+  const [showStats, setShowStats] = useState(false);
 
   const visible =
     activeCategory === 'all'
@@ -21,7 +23,23 @@ export function MyList({ entries, onEdit, onRemove }: MyListProps) {
 
   return (
     <div className="mylist">
-      <h1 className="mylist__title">My List</h1>
+      <div className="mylist__header">
+        <h1 className="mylist__title">My List</h1>
+        <button
+          className={`mylist__stats-btn${showStats ? ' mylist__stats-btn--active' : ''}`}
+          onClick={() => setShowStats((v) => !v)}
+          aria-pressed={showStats}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+          </svg>
+          Stats
+        </button>
+      </div>
+
+      {showStats && <StatsPanel entries={entries} />}
 
       <div className="mylist__tabs" role="tablist" aria-label="Filter by category">
         {CATEGORIES.map((cat) => {
