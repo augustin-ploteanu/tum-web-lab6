@@ -37,7 +37,7 @@ function computeStats(entries: ListEntry[]): Record<EntryCategory, CategoryStats
 
     // Episode count
     if (entry.item.media_type === 'movie') {
-      s.totalEpisodes += 1;
+      s.totalEpisodes += entry.episodesWatched ?? 1;
     } else if (entry.episodesWatched === null && entry.totalEpisodes !== null) {
       // completed — all episodes watched
       s.totalEpisodes += entry.totalEpisodes;

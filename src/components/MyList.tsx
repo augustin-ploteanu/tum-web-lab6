@@ -48,11 +48,11 @@ function sortEntries(entries: ListEntry[], sort: SortKey, dir: 'asc' | 'desc'): 
 
 export function MyList({ entries, onEdit, onRemove }: MyListProps) {
   const [activeCategory, setActiveCategory] = useState<Category>('all');
-  const [showStats, setShowStats] = useState(false);
+  const [showStats, setShowStats] = useState(true);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<SortKey>('added');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
   const categoryEntries =
     activeCategory === 'all'

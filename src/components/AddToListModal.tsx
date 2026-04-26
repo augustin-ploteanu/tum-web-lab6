@@ -62,13 +62,13 @@ export function AddToListModal({
     return () => { document.body.style.overflow = ''; };
   }, []);
 
-  // Auto-set episodes when Completed is selected for TV shows
+  // When switching to Completed for TV, prefill totalEpisodes if episodes is empty
   useEffect(() => {
     if (item.media_type !== 'tv') return;
-    if (category === 'completed') {
-      setEpisodes(''); // empty string = "all" when completed
+    if (category === 'completed' && episodes === '' && totalEpisodes !== null) {
+      setEpisodes(String(totalEpisodes));
     }
-  }, [category, item.media_type]);
+  }, [category, item.media_type, totalEpisodes]);
 
   function handleOverlayClick(e: React.MouseEvent) {
     if (e.target === overlayRef.current) onClose();
@@ -94,11 +94,9 @@ export function AddToListModal({
 
     let episodesWatched: number | null;
     if (item.media_type === 'movie') {
-      episodesWatched = 1;
-    } else if (category === 'completed' || episodes === '') {
-      episodesWatched = null; // null = all watched
+      episodesWatched = category === 'completed' ? 1 : 0;
     } else {
-      episodesWatched = parseInt(episodes, 10);
+      episodesWatched = episodes === '' ? null : parseInt(episodes, 10);
     }
 
     const entry: ListEntry = {
@@ -108,7 +106,7 @@ export function AddToListModal({
       grade: parsedGrade,
       note: note.trim(),
       episodesWatched,
-      totalEpisodes: item.media_type === 'movie' ? null : totalEpisodes,
+      totalEpisodes: item.media_type === 'movie' ? 1 : totalEpisodes,
       addedAt: existingEntry?.addedAt ?? Date.now(),
     };
     onSave(entry);
@@ -208,17 +206,13 @@ export function AddToListModal({
                   className="modal__input"
                   min={0}
                   max={totalEpisodes ?? undefined}
-                  placeholder={category === 'completed' ? String(totalEpisodes ?? 'All') : '0'}
-                  value={category === 'completed' ? '' : episodes}
-                  disabled={category === 'completed'}
+                  placeholder="0"
+                  value={episodes}
                   onChange={handleEpisodesChange}
                 />
                 {totalEpisodes !== null && (
                   <span className="modal__episodes-total">
-                    /{' '}
-                    {category === 'completed'
-                      ? <strong>{totalEpisodes}</strong>
-                      : totalEpisodes}
+                    / {totalEpisodes}
                   </span>
                 )}
               </div>

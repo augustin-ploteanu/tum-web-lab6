@@ -19,16 +19,15 @@ export function ListEntryCard({ entry, onEdit, onRemove, viewMode = 'list' }: Li
     : null;
 
   const episodesLabel = (() => {
-    if (item.media_type === 'movie') return null;
+    if (item.media_type === 'movie') {
+      const watched = episodesWatched ?? 1;
+      const total = totalEpisodes ?? 1;
+      return `${watched} / ${total} ep.`;
+    }
+    const watched = episodesWatched ?? totalEpisodes ?? '?';
     const total = totalEpisodes !== null ? `/ ${totalEpisodes}` : '';
-    if (episodesWatched === null) {
-      // completed — all watched
-      return totalEpisodes !== null ? `${totalEpisodes} / ${totalEpisodes} eps.` : 'All eps. watched';
-    }
-    if (episodesWatched > 0) {
-      return `${episodesWatched} ${total} eps.`.trim();
-    }
-    return null;
+    if (episodesWatched === null && totalEpisodes === null) return null;
+    return `${watched} ${total} eps.`.trim();
   })();
 
   return (

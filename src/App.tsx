@@ -12,7 +12,7 @@ type View = 'search' | 'list'
 
 function App() {
   const [query, setQuery] = useState('')
-  const [view, setView] = useState<View>('search')
+  const [view, setView] = useState<View>('list')
   const [pendingItem, setPendingItem] = useState<WatchableItem | null>(null)
 
   const { results, status, error } = useSearch(query)
