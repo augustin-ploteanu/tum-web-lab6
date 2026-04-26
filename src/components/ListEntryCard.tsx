@@ -61,7 +61,7 @@ export function ListEntryCard({ entry, onEdit, onRemove, viewMode = 'list' }: Li
               {episodesLabel && (
                 <span className="entry-card__episodes">{episodesLabel}</span>
               )}
-              <span className="entry-card__category-badge">
+              <span className={`entry-card__category-badge entry-card__category-badge--${category}`}>
                 {CATEGORY_LABELS[category]}
               </span>
             </p>

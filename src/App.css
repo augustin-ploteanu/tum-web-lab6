@@ -689,8 +689,64 @@
   letter-spacing: 0.3px;
   padding: 2px 7px;
   border-radius: 4px;
-  background: var(--accent-bg);
-  color: var(--accent);
+  background: var(--cat-bg);
+  color: var(--cat-color);
+}
+
+.entry-card__category-badge--completed,
+.mylist__tab--completed,
+.modal__cat-option--completed {
+  --cat-color: #2563eb;
+  --cat-bg: rgba(37, 99, 235, 0.12);
+  color: var(--cat-color);
+  border-color: rgba(37, 99, 235, 0.4);
+}
+
+.mylist__tab--completed.mylist__tab--active,
+.modal__cat-option--completed {
+  background: var(--cat-bg);
+}
+
+.entry-card__category-badge--watching,
+.mylist__tab--watching,
+.modal__cat-option--watching {
+  --cat-color: #16a34a;
+  --cat-bg: rgba(22, 163, 74, 0.12);
+  color: var(--cat-color);
+  border-color: rgba(22, 163, 74, 0.4);
+}
+
+.mylist__tab--watching.mylist__tab--active,
+.modal__cat-option--watching {
+  background: var(--cat-bg);
+}
+
+.entry-card__category-badge--plan_to_watch,
+.mylist__tab--plan_to_watch,
+.modal__cat-option--plan_to_watch {
+  --cat-color: #6b7280;
+  --cat-bg: rgba(107, 114, 128, 0.12);
+  color: var(--cat-color);
+  border-color: rgba(107, 114, 128, 0.4);
+}
+
+.mylist__tab--plan_to_watch.mylist__tab--active,
+.modal__cat-option--plan_to_watch {
+  background: var(--cat-bg);
+}
+
+.entry-card__category-badge--dropped,
+.mylist__tab--dropped,
+.modal__cat-option--dropped {
+  --cat-color: #dc2626;
+  --cat-bg: rgba(220, 38, 38, 0.12);
+  color: var(--cat-color);
+  border-color: rgba(220, 38, 38, 0.4);
+}
+
+.mylist__tab--dropped.mylist__tab--active,
+.modal__cat-option--dropped {
+  background: var(--cat-bg);
 }
 
 .entry-card__episodes {
@@ -1165,9 +1221,14 @@
   letter-spacing: 0.3px;
   padding: 2px 8px;
   border-radius: 4px;
-  background: var(--accent-bg);
-  color: var(--accent);
+  background: var(--cat-bg, var(--accent-bg));
+  color: var(--cat-color, var(--accent));
 }
+
+.stats__cat-label--completed { --cat-color: #2563eb; --cat-bg: rgba(37, 99, 235, 0.12); }
+.stats__cat-label--watching { --cat-color: #16a34a; --cat-bg: rgba(22, 163, 74, 0.12); }
+.stats__cat-label--plan_to_watch { --cat-color: #6b7280; --cat-bg: rgba(107, 114, 128, 0.12); }
+.stats__cat-label--dropped { --cat-color: #dc2626; --cat-bg: rgba(220, 38, 38, 0.12); }
 
 /*Search and sort in list*/
 

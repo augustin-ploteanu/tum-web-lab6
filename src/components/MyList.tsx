@@ -87,26 +87,17 @@ export function MyList({ entries, onEdit, onRemove }: MyListProps) {
       {showStats && <StatsPanel entries={entries} />}
 
       <div className="mylist__tabs" role="tablist" aria-label="Filter by category">
-        {CATEGORIES.map((cat) => {
-          const count =
-            cat === 'all'
-              ? entries.length
-              : entries.filter((e) => e.category === cat).length;
-          return (
-            <button
-              key={cat}
-              role="tab"
-              aria-selected={activeCategory === cat}
-              className={`mylist__tab${activeCategory === cat ? ' mylist__tab--active' : ''}`}
-              onClick={() => setActiveCategory(cat)}
-            >
-              {CATEGORY_LABELS[cat]}
-              {count > 0 && (
-                <span className="mylist__tab-count">{count}</span>
-              )}
-            </button>
-          );
-        })}
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat}
+            role="tab"
+            aria-selected={activeCategory === cat}
+            className={`mylist__tab${cat !== 'all' ? ` mylist__tab--${cat}` : ''}${activeCategory === cat ? ' mylist__tab--active' : ''}`}
+            onClick={() => setActiveCategory(cat)}
+          >
+            {CATEGORY_LABELS[cat]}
+          </button>
+        ))}
       </div>
 
       <div className="mylist__controls">

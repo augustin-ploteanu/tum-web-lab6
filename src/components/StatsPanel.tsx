@@ -112,7 +112,7 @@ export function StatsPanel({ entries }: StatsPanelProps) {
             return (
               <tr key={cat}>
                 <td>
-                  <span className="stats__cat-label">{CATEGORY_LABELS[cat]}</span>
+                  <span className={`stats__cat-label stats__cat-label--${cat}`}>{CATEGORY_LABELS[cat]}</span>
                 </td>
                 <td>{s.count}</td>
                 <td>{s.totalEpisodes}</td>

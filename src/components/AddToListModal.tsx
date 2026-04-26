@@ -159,7 +159,7 @@ export function AddToListModal({
               {ENTRY_CATEGORIES.map((cat) => (
                 <label
                   key={cat}
-                  className={`modal__cat-option${category === cat ? ' modal__cat-option--active' : ''}`}
+                  className={`modal__cat-option${category === cat ? ` modal__cat-option--active modal__cat-option--${cat}` : ''}`}
                 >
                   <input
                     type="radio"
