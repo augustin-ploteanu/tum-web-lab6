@@ -96,7 +96,7 @@ export function AddToListModal({
     if (item.media_type === 'movie') {
       episodesWatched = category === 'completed' ? 1 : 0;
     } else {
-      episodesWatched = episodes === '' ? null : parseInt(episodes, 10);
+      episodesWatched = episodes === '' ? 0 : parseInt(episodes, 10);
     }
 
     const entry: ListEntry = {
