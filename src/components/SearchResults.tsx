@@ -23,7 +23,17 @@ export function SearchResults({
 }: SearchResultsProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
-  if (status === 'idle') return null;
+  if (status === 'idle') {
+    return (
+      <div className="search-placeholder" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <p>Results will appear here</p>
+      </div>
+    );
+  }
 
   if (status === 'loading') {
     return (

@@ -47,6 +47,13 @@ function App() {
           </button>
           <nav className="app-header__nav">
             <button
+              className={`nav-btn${view === 'search' ? ' nav-btn--active' : ''}`}
+              onClick={() => setView('search')}
+              aria-current={view === 'search' ? 'page' : undefined}
+            >
+              Search
+            </button>
+            <button
               className={`nav-btn${view === 'list' ? ' nav-btn--active' : ''}`}
               onClick={() => setView('list')}
               aria-current={view === 'list' ? 'page' : undefined}

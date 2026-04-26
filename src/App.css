@@ -90,9 +90,10 @@
 
 .search-section {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   gap: 16px;
-  max-width: 680px;
+  max-width: 900px;
 }
 
 .search-section__title {
@@ -101,10 +102,16 @@
   letter-spacing: -0.8px;
   color: var(--text-h);
   margin: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
 
   @media (max-width: 1024px) {
     font-size: 24px;
   }
+}
+
+.search-section .search-bar {
+  flex: 1;
 }
 
 /* Search bar*/
@@ -155,6 +162,27 @@
 }
 
 /* Feedback states */
+
+.search-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 80px 0;
+  color: var(--text);
+  opacity: 0.45;
+
+  svg {
+    width: 52px;
+    height: 52px;
+  }
+
+  p {
+    font-size: 16px;
+    margin: 0;
+  }
+}
 
 .search-feedback {
   display: flex;
