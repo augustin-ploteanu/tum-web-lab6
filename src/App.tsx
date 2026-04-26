@@ -3,6 +3,7 @@ import { SearchBar } from './components/SearchBar'
 import { SearchResults } from './components/SearchResults'
 import { MyList } from './components/MyList'
 import { AddToListModal } from './components/AddToListModal'
+import { ThemeToggle } from './components/ThemeToggle'
 import { useSearch } from './hooks/useSearch'
 import { useWatchlist } from './hooks/useWatchlist'
 import type { WatchableItem, ListEntry } from './types'
@@ -60,6 +61,7 @@ function App() {
             >
               My List
             </button>
+            <ThemeToggle />
           </nav>
         </div>
       </header>
